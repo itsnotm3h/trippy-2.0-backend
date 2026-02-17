@@ -1,7 +1,6 @@
 import express, { type Request, type Response } from 'express';
 import cors from 'cors';
-import { CONFIG } from './config/env'; // Our secure typed config
-import tripsRouter from './trips/tripRoutes';
+import tripsRouter from './routes/Routes';
 
 const app = express();
 const PORT = 3000; // this port is for out api.
