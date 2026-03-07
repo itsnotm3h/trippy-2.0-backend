@@ -16,11 +16,12 @@ export const checkJWT = (
 
     req.auth = {
       payload: {
-        sub: "auth0Lmock123",
+        sub: "auth0|123456789",
         displayName: "testUser",
         firstName: "test",
         lastName: "user",
         email: "test@example.com",
+        password:"1",
         iat: Math.floor(Date.now() / 1000),
         exp: Math.floor(Date.now() / 1000) + 3600,
       },

@@ -8,8 +8,10 @@ export const TripService = {
     },
     getTripById: async (tripId: number) => {
         try {
-            //Neeed to check if the user belongs to this trip. 
-            return await TripRepository.findByTripId(tripId);
+            //Neeed to check if the user belongs to this trip.
+            const result = await TripRepository.findByTripId(tripId);
+
+            return result;
         }
         catch (error) {
             throw new Error("No Trip found.")

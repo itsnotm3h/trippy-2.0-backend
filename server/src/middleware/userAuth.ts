@@ -8,6 +8,7 @@ export const identifyUser = async (
   res: Response,
   next: NextFunction,
 ) => {
+
   const authId = req.auth?.payload.sub;
 
   try {
@@ -15,6 +16,10 @@ export const identifyUser = async (
       where: { authId },
       defaults: {
         displayName: req.auth?.payload.displayName,
+        firstName:req.auth?.payload.firstName,
+        lastName:req.auth?.payload.lastName,
+        password:req.auth?.payload.password,
+        email:req.auth?.payload.email
       },
     });
 
@@ -45,6 +50,9 @@ export const identifyUser = async (
     // }
 
     req.dbUser = user;
+
+    // console.log(req.dbUser.userId);
+
     next();
   } catch (err) {
     next(err);
@@ -57,18 +65,18 @@ export const identifyTripRole = async (
   next: NextFunction,
 ) => {
   try {
+    console.log( req.dbUser);
+
     const { tripId } = req.params;
-    const userId = req.dbUser.id;
+    const userId = req.dbUser.userId;
+
+    console.log(tripId);
+    console.log(userId);
 
     if (userId === undefined || tripId === undefined)
       return next(new AppError("Error authorised entry", 400));
 
-    const isMember = await TripMembers.findOne({
-        where:{
-            tripId,
-            userId
-        }
-    });
+
 
     const isLeader = await Trip.findOne({
         where:{
@@ -77,10 +85,21 @@ export const identifyTripRole = async (
         }
     })
 
+    console.log(isLeader);
+
+    const isMember = await TripMembers.findOne({
+        where:{
+            tripId,
+            userId
+        }
+    });
+
 
     if(!isMember && !isLeader) return next(new AppError ("Identity Check failed: You are not a member", 403))
 
     req.tripRole = isLeader ? "leader": isMember ? "member" : "";
+
+    console.log("found : ", req.tripRole)
 
     next();
 
