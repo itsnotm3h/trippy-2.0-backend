@@ -37,7 +37,8 @@ export const TripRepository = {
                     [Sequelize.literal('`members->TripMembers`.`status`'), 'status']
                 ],
                 through: { attributes: [] }
-            }]
+            }],
+            logging:true
         })
     }
 }
