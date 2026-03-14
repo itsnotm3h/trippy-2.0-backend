@@ -4,7 +4,8 @@ import express, {
   type NextFunction,
 } from "express";
 import cors from "cors";
-import tripsRouter from "./routes/Routes";
+import tripRouter from "./routes/tripRouter";
+import userRouter from "./routes/userRouter";
 
 const app = express();
 const PORT = 3000; // this port is for out api.
@@ -13,8 +14,10 @@ const PORT = 3000; // this port is for out api.
 app.use(cors()); // Allows your React app (usually on port 3000 or 5173) to talk to this server
 app.use(express.json()); // Allow server to read json.
 
+app.use("/api/authenticate", userRouter);
+
 // Routes
-app.use("/api/trips", tripsRouter);
+app.use("/api/trips", tripRouter);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   // If it's an AppError, use its status code; otherwise, default to 500

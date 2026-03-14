@@ -6,6 +6,8 @@ class Users extends Model {
   declare name: string;
   declare password: string;
   declare email: string;
+  declare authId: string;
+  declare displayName: string;
   static associate(models: any) {
     Users.hasMany(models.Expenses, {
       foreignKey: "payerId",
@@ -55,6 +57,10 @@ Users.init(
       field: "user_id",
       autoIncrement: true,
       primaryKey: true,
+    },
+    username: {
+      type: DataTypes.STRING,
+      field: "username",
     },
     firstName: {
       type: DataTypes.STRING,
