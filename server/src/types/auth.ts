@@ -8,6 +8,7 @@ export interface AuthUser {
   email: string;
   iat: number;
   exp: number;
+  password:string;
 }
 
 export interface AuthRequest extends Request {

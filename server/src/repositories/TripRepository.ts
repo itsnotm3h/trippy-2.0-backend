@@ -33,12 +33,12 @@ export const TripRepository = {
                 as: 'members',
                 attributes: [
                     'userId',
-                    'name',
+                    'firstName',
                     [Sequelize.literal('`members->TripMembers`.`status`'), 'status']
                 ],
                 through: { attributes: [] }
             }],
-            logging:true
+            logging:console.log
         })
     }
 }
