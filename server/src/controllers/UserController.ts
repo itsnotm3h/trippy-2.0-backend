@@ -25,13 +25,20 @@ export const loginUser = async (req: Request, res: Response) => {
       throw new Error("JWT_SECRET not configured");
     }
 
-    const token = jwt.sign(payload, JWT_SECRET_KEY as string, {
+    const token = jwt.sign(payload, JWT_SECRET_KEY, {
       expiresIn: "1h",
+    });
+
+    res.cookie("token", token, {
+      httpOnly: true, // Prevents JS access
+      secure: true, // Only sends over HTTPS
+      sameSite: "strict", // Prevents CSRF attacks
+      maxAge: 3600000, // 1 hour
+      signed: true,
     });
 
     return res.status(200).json({
       message: "Login successful",
-      token,
     });
   } catch (error) {
     console.error(error); // log internally

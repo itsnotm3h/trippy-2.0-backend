@@ -8,7 +8,6 @@ export const identifyUser = async (
   res: Response,
   next: NextFunction,
 ) => {
-
   const authId = req.auth?.payload.sub;
 
   try {
@@ -16,10 +15,6 @@ export const identifyUser = async (
       where: { authId },
       defaults: {
         displayName: req.auth?.payload.displayName,
-        firstName:req.auth?.payload.firstName,
-        lastName:req.auth?.payload.lastName,
-        password:req.auth?.payload.password,
-        email:req.auth?.payload.email
       },
     });
 
@@ -65,44 +60,34 @@ export const identifyTripRole = async (
   next: NextFunction,
 ) => {
   try {
-    console.log( req.dbUser);
-
     const { tripId } = req.params;
     const userId = req.dbUser.userId;
-
-    console.log(tripId);
-    console.log(userId);
 
     if (userId === undefined || tripId === undefined)
       return next(new AppError("Error authorised entry", 400));
 
-
-
     const isLeader = await Trip.findOne({
-        where:{
-            tripId,
-            leaderId: userId
-        }
-    })
-
-    console.log(isLeader);
-
-    const isMember = await TripMembers.findOne({
-        where:{
-            tripId,
-            userId
-        }
+      where: {
+        tripId,
+        leaderId: userId,
+      },
     });
 
+    const isMember = await TripMembers.findOne({
+      where: {
+        tripId,
+        userId,
+      },
+    });
 
-    if(!isMember && !isLeader) return next(new AppError ("Identity Check failed: You are not a member", 403))
+    if (!isMember && !isLeader)
+      return next(
+        new AppError("Identity Check failed: You are not a member", 403),
+      );
 
-    req.tripRole = isLeader ? "leader": isMember ? "member" : "";
-
-    console.log("found : ", req.tripRole)
+    req.tripRole = isLeader ? "leader" : isMember ? "member" : "";
 
     next();
-
   } catch (err) {
     next(err);
   }

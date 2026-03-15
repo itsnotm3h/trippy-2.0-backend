@@ -20,3 +20,4 @@ export const CONFIG = {
 };
 
 export const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+export const COOKIE_SECRET_KEY = process.env.COOKIE_SECRET_KEY;

@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { TripService } from "../services/TripService";
-import { TripIdSchema, UserIdSchema } from "../validators/trip.validator";
+import { TripIdSchema } from "../validators/trip.validator";
 import { AuthRequest } from "../schema/authSchema";
 
 export const getUserTrips = async (req: AuthRequest, res: Response) => {
@@ -16,9 +16,17 @@ export const getUserTrips = async (req: AuthRequest, res: Response) => {
 export const getTripById = async (req: AuthRequest, res: Response) => {
   try {
     const { tripId } = TripIdSchema.parse({ ...req.params });
+    const tripRole = req.tripRole;
+
+    if (tripRole == "")
+      res
+        .status(401)
+        .json({ message: "You are not authorised to view this trip" });
+
     const trips = await TripService.getTripById(tripId);
-    res.status(200).json(trips);
+    res.status(200).json({ trips, tripRole });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Error fetching trips", error });
   }
 };

@@ -1,11 +1,13 @@
 import { Router } from "express";
 import { checkJWT } from "../middleware/auth";
-import { identifyUser } from "../middleware/userAuth";
+import { identifyTripRole, identifyUser } from "../middleware/userAuth";
 import { getTripById, getUserTrips } from "../controllers/TripController";
 
 const tripRouter = Router();
+
+tripRouter.use(checkJWT, identifyUser);
 //Trip endpoints
-tripRouter.get("", checkJWT, identifyUser, getUserTrips);
-tripRouter.get("/:tripId", getTripById);
+tripRouter.get("", getUserTrips);
+tripRouter.get("/:tripId", identifyTripRole, getTripById);
 
 export default tripRouter;
