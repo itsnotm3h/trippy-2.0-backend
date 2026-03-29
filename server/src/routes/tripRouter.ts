@@ -10,11 +10,11 @@ import {
 const tripRouter = Router();
 
 tripRouter.use(checkJWT, identifyUser);
-//Trip endpoints
-tripRouter.get("", getUserTrips);
-tripRouter.get("/:tripId", identifyTripRole, getTripById);
+tripRouter.get("", getUserTrips); //Trip endpoints
 
-//Only the leader can edit the trip setting.
-tripRouter.post("/update/:tripId", identifyTripRole, updateTripSetting);
+tripRouter.use(identifyTripRole); // Endpoint below requires user role in the trip
+tripRouter.get("/:tripId", getTripById); //Get Trip's information
+tripRouter.post("/update/:tripId", updateTripSetting); //Only the leader can edit the trip setting.
+
 
 export default tripRouter;
