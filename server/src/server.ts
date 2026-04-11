@@ -17,15 +17,6 @@ app.use(cors()); // Allows your React app (usually on port 3000 or 5173) to talk
 app.use(express.json()); // Allow server to read json.
 app.use(cookieParser(COOKIE_SECRET_KEY));
 
-import bcrypt from "bcrypt";
-
-const saltRounds = 10; // The 'work factor' - higher is more secure but slower
-const plainPassword = "1";
-
-// Asynchronous hashing
-const hashedPassword = await bcrypt.hash(plainPassword, saltRounds);
-
-console.log(hashedPassword);
 
 app.use("/api/authenticate", userRouter);
 
