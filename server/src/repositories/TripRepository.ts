@@ -1,5 +1,5 @@
-import { Op, Sequelize, where } from "sequelize";
-import { PersonalBudget, Trip, Users } from "../models";
+import { Op, Sequelize } from "sequelize";
+import { Trip, Users } from "../models";
 import { TripEditType } from "../validators/trip.validator";
 
 export const TripRepository = {

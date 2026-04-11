@@ -1,3 +1,4 @@
+import { Expenses, Trip } from "../models";
 import { TripRepository } from "../repositories/TripRepository";
 import { TripEditType } from "../validators/trip.validator";
 
@@ -8,29 +9,29 @@ export const TripService = {
   getTripById: async (tripId: number) => {
     return await TripRepository.findByTripId(tripId);
   },
-  updateTripSetting: async (
-    tripId: number,
-    tripRole: string,
-    edits: TripEditType,
-  ) => {
-    //Before the update can be done, need to ensure that the user has the role of leader
-    if (tripRole !== "leader")
-      throw new Error("User is not authorised to make changes ");
+  updateTripSetting: async (tripId: number, edits: TripEditType) => {
 
-    //title: Cannot have weird scripts.
-    //type: it will need to ensure that there is no expenses and trip members, otherwise throw Error.
-    //country: It will need to ensure that the currency rate from the front end is changed.
-    //startDate: cannot be later than newEndDate and Old endDate.
-    //endDate: Cannot be earlier than newStartDate and old startDate.
-    //isDelete: old isDelete cannot be equals to new.
-    //isActive: old isActive cannot be equals to new.
+    const trip = await Trip.findByPk(tripId);
+    if (!trip) throw new Error("Trip does not exist");
+
+    //Check if there is any expense created in the trip, before allowing changes.
+    if (edits.type) {
+      const expense = await Expenses.findOne({
+        where: {
+          tripId,
+        },
+      });
+
+      if (expense !== null)
+        throw new Error("The trip has expenses, unable to change trip type");
+    }
 
     const [affectedRows] = await TripRepository.updateTripSetting(
       tripId,
       edits,
     );
 
-    if (affectedRows === 0) throw new Error("Trips not found.");
+    if (affectedRows === 0) throw new Error("There is no updates.");
 
     return { message: "Successfully updated" };
   },

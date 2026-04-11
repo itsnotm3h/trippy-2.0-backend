@@ -39,15 +39,39 @@ export const getTripById = async (req: AuthRequest, res: Response) => {
 export const updateTripSetting = async (req: AuthRequest, res: Response) => {
   try {
     const { tripId } = TripIdSchema.parse({ ...req.params });
-    const edits = TripEditsSchema.parse({ ...req.body });
-    const tripRole = req.tripRole??"";
 
-    const result = await TripService.updateTripSetting(tripId, tripRole, edits);
+    const tripRole = req.tripRole ?? "";
+
+    //Only leaders can make changes to trip setting.
+    if (tripRole !== "LEADER")
+      return res.status(401).json({ message: "Unauthorised to make changes" });
+
+    //Validating Data ensure that the values are in the correct type.
+    if (req.body === undefined)
+      return res
+        .status(401)
+        .json({ message: "No field provided for updates." });
+
+    const validate = TripEditsSchema.safeParse({ ...req.body });
+
+    if (!validate.success) {
+      return res
+        .status(400)
+        .json({ message: validate.error.message.toString() });
+    }
+
+    const edits = validate.data;
+    const result = await TripService.updateTripSetting(tripId, edits);
 
     res.status(200).json({
-      message: `${result.message} Trip(id:${tripId}) with the following changes: ${edits}`,
+      message: `${result.message} Trip(id:${tripId})`,
     });
   } catch (error) {
     console.log(error);
+    if (error instanceof Error) {
+      return res.status(400).json({ message: error.message });
+    }
+
+    res.status(500).json({ message: "Unexpected Error" });
   }
 };

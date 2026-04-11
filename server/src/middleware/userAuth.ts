@@ -85,7 +85,7 @@ export const identifyTripRole = async (
         new AppError("Identity Check failed: You are not a member", 403),
       );
 
-    req.tripRole = isLeader ? "leader" : isMember ? "member" : "";
+    req.tripRole = isLeader ? "LEADER" : isMember ? "MEMBER" : "";
 
     next();
   } catch (err) {

@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { Request } from "express";
-import * as jwt from "jsonwebtoken";
 
 // 1. The Zod Schema (The logic)
 export const AuthUserSchema = z.object({
@@ -11,7 +10,7 @@ export const AuthUserSchema = z.object({
 });
 
 export const loginCredentials = z.object({
-  email: z.string().email(),
+  email: z.string(),
   password: z.string(),
 });
 // 2. The Inferred Type (The shape of the data)

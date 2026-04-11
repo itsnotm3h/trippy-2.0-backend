@@ -15,6 +15,6 @@ tripRouter.get("", getUserTrips);
 tripRouter.get("/:tripId", identifyTripRole, getTripById);
 
 //Only the leader can edit the trip setting.
-tripRouter.post("/update/:tripId", identifyTripRole, updateTripSetting);
+tripRouter.patch("/update/:tripId", identifyTripRole, updateTripSetting);
 
 export default tripRouter;
